@@ -6,8 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class TobySrpingFrameWorkApplicationTests {
 
+
     @Test
-    void contextLoads() {
+    public void test(){
+        System.out.println("########");
     }
 
 }
