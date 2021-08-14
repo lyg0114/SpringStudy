@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class NUserDao extends UserDao{
 
-    @Override
+
     protected Connection getConnection() throws ClassNotFoundException,
             SQLException {
         Class.forName("com.mysql.jdbc.Driver");

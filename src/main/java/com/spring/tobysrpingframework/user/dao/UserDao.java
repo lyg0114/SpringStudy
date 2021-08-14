@@ -5,9 +5,14 @@ import com.spring.tobysrpingframework.user.domain.User;
 import java.sql.*;
 
 public abstract class UserDao {
+    private SimpleConnectionMaker simpleConnectionMaker;
+
+    public UserDao() {
+        this.simpleConnectionMaker = new SimpleConnectionMaker();
+    }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "insert into users(id, name, password) values(?,?,?)");
@@ -23,7 +28,7 @@ public abstract class UserDao {
 
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.getConnection();
 
         PreparedStatement ps = c
                 .prepareStatement("select * from users where id = ?");
@@ -43,17 +48,11 @@ public abstract class UserDao {
         return user;
     }
 
-
-    abstract protected Connection getConnection() throws ClassNotFoundException, SQLException ;
-
-
-
-
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         UserDao dao = new NUserDao();
 
         User user = new User();
-        user.setId("whiteship");
+        user.setId("yglee");
         user.setName("이초다");
         user.setPassword("married");
 
