@@ -1,14 +1,16 @@
 package com.spring.tobysrpingframework.user.dao;
 
 import com.spring.tobysrpingframework.user.domain.User;
+import org.apache.catalina.core.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
 
 public class UserDaoTest {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
-        ConnectionMaker connectionMaker = new DConnectionMaker();
-        UserDao dao = new UserDao(connectionMaker);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DataFactory.class);
+        UserDao dao = context.getBean("userDao", UserDao.class);
 
         User user = new User();
         user.setId("yglee");
