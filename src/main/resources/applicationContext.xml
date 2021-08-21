@@ -3,10 +3,14 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-
-    <bean id="connectionMaker" class="com.spring.tobysrpingframework.user.dao.DConnectionMaker"/>
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://lizcalendal-mysql.canpeabsn7mi.ap-northeast-2.rds.amazonaws.com:3306/spring_study" />
+        <property name="username" value="kylelovelizzy" />
+        <property name="password" value="kylelovelizzy" />
+    </bean>
 
     <bean id="userDao" class="com.spring.tobysrpingframework.user.dao.UserDao">
-        <property name="connectionMaker" ref="connectionMaker" />
+        <property name="dataSource" ref="dataSource" />
     </bean>
 </beans>

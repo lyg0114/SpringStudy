@@ -3,13 +3,16 @@ package com.spring.tobysrpingframework.user.dao;
 import com.spring.tobysrpingframework.user.domain.User;
 import org.apache.catalina.core.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.sql.SQLException;
 
 public class UserDaoTest {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DataFactory.class);
+        //AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DataFactory.class);
+        GenericXmlApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+
         UserDao dao = context.getBean("userDao", UserDao.class);
 
         User user = new User();
