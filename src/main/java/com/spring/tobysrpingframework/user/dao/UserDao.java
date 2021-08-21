@@ -8,7 +8,15 @@ public class UserDao {
 
     private ConnectionMaker connectionMaker;
 
+    public UserDao(){
+
+    }
+
     public UserDao(ConnectionMaker connectionMaker) {  // UserDao는 connectionMaker의 Object에는 관심이 없다.
+        this.connectionMaker = connectionMaker;
+    }
+
+    public void setConnectionMaker(ConnectionMaker connectionMaker){
         this.connectionMaker = connectionMaker;
     }
 

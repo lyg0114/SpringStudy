@@ -8,7 +8,9 @@ public class DataFactory {
 
     @Bean
     public UserDao userDao() {
-        UserDao dao = new UserDao(connectionMaker());
+        //UserDao dao = new UserDao(connectionMaker());
+        UserDao dao = new UserDao();
+        dao.setConnectionMaker(connectionMaker());
         return dao;
     }
 
