@@ -12,7 +12,6 @@ import java.sql.SQLException;
 public class UserDaoTest {
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
-
         //AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DataFactory.class);
         GenericXmlApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 
@@ -22,15 +21,18 @@ public class UserDaoTest {
         user.setId("yglee");
         user.setName("이초다");
         user.setPassword("married");
-
         dao.add(user);
-
-        System.out.println(user.getId() + "등록성공");
-
         User user2 = dao.get(user.getId());
-        System.out.println(user2.getName());
-        System.out.println(user2.getPassword());
 
-        System.out.println(user2.getId() + "조회성공");
+        if(!user.getName().equals(user2.getName())){
+            System.out.println("테스트 실패 (name)");
+        }
+        else if(!user.getPassword().equals(user2.getPassword())){
+            System.out.println("테스트 실패 (password)");
+        }
+        else{
+            System.out.println("조회 테스트 성공");
+        }
+
     }
 }
