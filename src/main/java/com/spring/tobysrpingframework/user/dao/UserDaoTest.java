@@ -1,20 +1,28 @@
 package com.spring.tobysrpingframework.user.dao;
 
 import com.spring.tobysrpingframework.user.domain.User;
-import org.apache.catalina.core.ApplicationContext;
+import java.sql.SQLException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.sql.SQLException;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDaoTest {
+
+    @Autowired
+    ApplicationContext context;
 
     private UserDao dao;
     private User user1;
@@ -23,8 +31,8 @@ public class UserDaoTest {
 
     @Before
     public void setUp(){
-        GenericXmlApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-        this.dao = context.getBean("userDao", UserDao.class);
+        //GenericXmlApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+        this.dao = this.context.getBean("userDao", UserDao.class);
         this.user1 = new User("kyle1","이초다1","password1");;
         this.user2 = new User("kyle2","이초다2","password2");;
         this.user3 = new User("kyle3","이초다3","password3");;
