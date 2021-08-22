@@ -2,6 +2,7 @@ package com.spring.tobysrpingframework.user.dao;
 
 import com.spring.tobysrpingframework.user.domain.User;
 import org.apache.catalina.core.ApplicationContext;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -15,15 +16,22 @@ import static org.junit.Assert.assertThat;
 
 public class UserDaoTest {
 
+    private UserDao dao;
+    private User user1;
+    private User user2;
+    private User user3;
+
+    @Before
+    public void setUp(){
+        GenericXmlApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+        this.dao = context.getBean("userDao", UserDao.class);
+        this.user1 = new User("kyle1","이초다1","password1");;
+        this.user2 = new User("kyle2","이초다2","password2");;
+        this.user3 = new User("kyle3","이초다3","password3");;
+    }
+
     @Test
     public void addAndGet() throws ClassNotFoundException, SQLException {
-
-        //AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DataFactory.class);
-        GenericXmlApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-        UserDao dao = context.getBean("userDao", UserDao.class);
-
-        User user1 = new User("kyle1","이초다1","password1");
-        User user2 = new User("kyle2","이초다2","password2");
 
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
@@ -46,13 +54,6 @@ public class UserDaoTest {
 
     @Test
     public void count() throws SQLException, ClassNotFoundException {
-        //AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DataFactory.class);
-        GenericXmlApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-        UserDao dao = context.getBean("userDao", UserDao.class);
-
-        User user1 = new User("kyle1","이초다1","password1");
-        User user2 = new User("kyle2","이초다2","password2");
-        User user3 = new User("kyle3","이초다3","password3");
 
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
@@ -70,18 +71,10 @@ public class UserDaoTest {
     @Test(expected= EmptyResultDataAccessException.class)
     public void getUserFailure() throws SQLException, ClassNotFoundException {
 
-        GenericXmlApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-        UserDao dao = context.getBean("userDao", UserDao.class);
-
         dao.deleteAll();
         assertThat(dao.getCount(), is(0));
-
-        User user1 = new User("kyle1","이초다1","password1");
-        dao.get(user1.getId());
+        dao.get("unknown_id");
     }
-
-
-
 
     public static void main(String[] args) {
         JUnitCore.main("com.spring.tobysrpingframework.user.dao.UserDaoTest");
