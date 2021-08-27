@@ -36,7 +36,6 @@ public class UserDao {
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-
         jdbcContextWithStatementStrategy(
                 new StatementStrategy() {
             public PreparedStatement makePreparedStatement(Connection c)
@@ -80,7 +79,6 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        StatementStrategy st = new DeleteAllStatement();
         jdbcContextWithStatementStrategy(
                 new StatementStrategy() {
                     public PreparedStatement makePreparedStatement(Connection c)
