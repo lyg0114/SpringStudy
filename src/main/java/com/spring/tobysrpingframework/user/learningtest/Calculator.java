@@ -25,6 +25,26 @@ public class Calculator {
     }
 
 
+    public Integer calcMultiply(String filepath) throws IOException{
+
+        BufferedReaderCallback multiflyCallback = new BufferedReaderCallback() {
+
+            @Override
+            public Integer doSomethingithReader(BufferedReader br) throws IOException{
+                Integer multiply = 1;
+                String line = null;
+                while((line = br.readLine()) != null){
+                    multiply *= Integer.valueOf(line);
+                }
+                return multiply;
+            }
+        };
+
+        return fildReadTemplate(filepath, multiflyCallback);
+
+    }
+
+
     public Integer fildReadTemplate(String filepath, BufferedReaderCallback callback) throws IOException{
         BufferedReader br = null;
 
@@ -47,6 +67,5 @@ public class Calculator {
 
 
     }
-
 
 }
