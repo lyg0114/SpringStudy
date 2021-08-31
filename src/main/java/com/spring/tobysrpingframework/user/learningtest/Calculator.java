@@ -15,9 +15,7 @@ public class Calculator {
             }
         };
         return lineReadTemplate(filepath, sumCallback,0);
-
     }
-
 
     public Integer calcMultiply(String filepath) throws IOException{
 
@@ -28,6 +26,19 @@ public class Calculator {
             }
         };
         return lineReadTemplate(filepath, multiflyCallback, 1);
+    }
+
+    public String concatenate(String filepath) throws IOException {
+
+        GenericLineCallback<String> concatenateCallback = new GenericLineCallback<String>() {
+
+            @Override
+            public String doSomethingWithLine(String line, String value){
+                return value + line;
+            }
+        };
+        return lineReadTemplate(filepath, concatenateCallback, "");
+
     }
 
     public <T> T lineReadTemplate(String filepath, GenericLineCallback<T> callback, T initValue) throws IOException{

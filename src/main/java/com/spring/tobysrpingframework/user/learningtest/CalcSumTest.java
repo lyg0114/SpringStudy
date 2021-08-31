@@ -8,7 +8,6 @@ import java.io.IOException;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-
 public class CalcSumTest {
      Calculator calculator;
      String filepath;
@@ -27,6 +26,11 @@ public class CalcSumTest {
     @Test
     public void multiplyOfNumbers() throws IOException{
         assertThat(calculator.calcMultiply(filepath), is(24));
+    }
+
+    @Test
+    public void concatenateStrings() throws IOException {
+        assertThat(calculator.concatenate(this.filepath), is("1234"));
     }
 
 }
