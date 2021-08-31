@@ -8,43 +8,35 @@ public class Calculator {
 
     public Integer calcSum(String filepath) throws IOException{
 
-        LineCallback sumCallback = new LineCallback() {
-
+        GenericLineCallback<Integer> sumCallback = new GenericLineCallback<Integer>() {
             @Override
-            public Integer doSomethingWithLine(String line, Integer value) throws IOException{
-                value += Integer.valueOf(line);
-                return value;
+            public Integer doSomethingWithLine(String line, Integer value){
+                return value + Integer.valueOf(line);
             }
         };
-
-        return lineFildReadTemplate(filepath, sumCallback,0);
+        return lineReadTemplate(filepath, sumCallback,0);
 
     }
 
 
     public Integer calcMultiply(String filepath) throws IOException{
 
-        LineCallback multiflyCallback = new LineCallback() {
-
+        GenericLineCallback<Integer> multiflyCallback = new GenericLineCallback<Integer>() {
             @Override
-            public Integer doSomethingWithLine(String line, Integer value) throws IOException{
-                value *= Integer.valueOf(line);
-                return value;
+            public Integer doSomethingWithLine(String line, Integer value){
+                return value * Integer.valueOf(line);
             }
         };
-
-        return lineFildReadTemplate(filepath, multiflyCallback, 1);
-
+        return lineReadTemplate(filepath, multiflyCallback, 1);
     }
 
-    public Integer lineFildReadTemplate(String filepath, LineCallback callback, Integer initValue) throws IOException{
+    public <T> T lineReadTemplate(String filepath, GenericLineCallback<T> callback, T initValue) throws IOException{
         BufferedReader br = null;
 
         try{
-            Integer resultValue = initValue;
-            String line = null;
-
             br = new BufferedReader(new FileReader(filepath));
+            T resultValue = initValue;
+            String line = null;
             while((line = br.readLine()) != null){
                 resultValue = callback.doSomethingWithLine(line, resultValue);
             }
