@@ -8,6 +8,7 @@ import java.io.IOException;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+
 public class CalcSumTest {
      Calculator calculator;
      String filepath;

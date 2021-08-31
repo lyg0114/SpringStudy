@@ -11,7 +11,7 @@ public class Calculator {
         LineCallback sumCallback = new LineCallback() {
 
             @Override
-            public Integer doSomethingithLine(String line, Integer value) throws IOException{
+            public Integer doSomethingWithLine(String line, Integer value) throws IOException{
                 value += Integer.valueOf(line);
                 return value;
             }
@@ -27,7 +27,7 @@ public class Calculator {
         LineCallback multiflyCallback = new LineCallback() {
 
             @Override
-            public Integer doSomethingithLine(String line, Integer value) throws IOException{
+            public Integer doSomethingWithLine(String line, Integer value) throws IOException{
                 value *= Integer.valueOf(line);
                 return value;
             }
@@ -36,7 +36,6 @@ public class Calculator {
         return lineFildReadTemplate(filepath, multiflyCallback, 1);
 
     }
-
 
     public Integer lineFildReadTemplate(String filepath, LineCallback callback, Integer initValue) throws IOException{
         BufferedReader br = null;
@@ -47,7 +46,7 @@ public class Calculator {
 
             br = new BufferedReader(new FileReader(filepath));
             while((line = br.readLine()) != null){
-                resultValue = callback.doSomethingithLine(line, resultValue);
+                resultValue = callback.doSomethingWithLine(line, resultValue);
             }
             return resultValue;
 

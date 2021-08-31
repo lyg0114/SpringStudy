@@ -5,6 +5,6 @@ import java.io.IOException;
 
 public interface LineCallback {
 
-    Integer doSomethingithLine(String line, Integer value) throws IOException;
+    Integer doSomethingWithLine(String line, Integer value) throws IOException;
 
 }
