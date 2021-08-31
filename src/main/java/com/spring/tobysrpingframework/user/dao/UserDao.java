@@ -1,13 +1,19 @@
 package com.spring.tobysrpingframework.user.dao;
 
 import com.spring.tobysrpingframework.user.domain.User;
+import jdk.nashorn.internal.scripts.JD;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDao {
 
+    private JdbcTemplate jdbcTemplate;
     private JdbcContext jdbcContext;
     private DataSource dataSource;
 
@@ -15,6 +21,7 @@ public class UserDao {
     }
 
     public void setDataSource(DataSource dataSource){
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.jdbcContext = new JdbcContext();
         this.jdbcContext.setDataSource(dataSource);
         this.dataSource = dataSource;
@@ -22,20 +29,8 @@ public class UserDao {
 
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        this.jdbcContext.workWithStatementStrategy(
-                new StatementStrategy() {
-                    public PreparedStatement makePreparedStatement(Connection c)
-                            throws SQLException {
-                        PreparedStatement ps =
-                                c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
-                        ps.setString(1, user.getId());
-                        ps.setString(2, user.getName());
-                        ps.setString(3, user.getPassword());
-
-                        return ps;
-                    }
-                }
-        );
+        this.jdbcTemplate.update("insert into users(id, name, password) values(?,?,?)",
+                                        user.getId(),user.getName(),user.getPassword());
     }
 
 
@@ -66,43 +61,33 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        this.jdbcContext.executeSql("delete from users");
+        this.jdbcTemplate.update(
+                new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        return connection.prepareStatement("delete from users");
+                    }
+                }
+        );
     }
 
     public int getCount() throws SQLException  {
-        Connection c = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        return this.jdbcTemplate.query(
+                new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        return connection.prepareStatement("select count(*) from users");
+                    }
+                }, new ResultSetExtractor<Integer>() {
+                    @Override
+                    public Integer extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+                        resultSet.next();
+                        return resultSet.getInt(1);
+                    }
+                }
+        );
 
-        try{
-             c = dataSource.getConnection();
-             ps = c.prepareStatement("select count(*) from users");
-             rs = ps.executeQuery();
-             rs.next();
-             return rs.getInt(1);
 
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if(rs != null){
-                try {
-                    rs.close();
-                }catch (SQLException e){
-                }
-            }
-            if(ps != null){
-                try {
-                    ps.close();
-                }catch (SQLException e){
-                }
-            }
-            if(c != null){
-                try {
-                    c.close();
-                }catch (SQLException e){
-                }
-            }
-        }
     }
 
 
