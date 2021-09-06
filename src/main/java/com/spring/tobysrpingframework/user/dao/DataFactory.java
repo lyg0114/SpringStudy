@@ -1,22 +1,18 @@
 package com.spring.tobysrpingframework.user.dao;
 
-import com.sun.org.apache.bcel.internal.generic.SIPUSH;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 @Configuration
 public class DataFactory {
 
     @Bean
-    public UserDao userDao() {
-        //UserDao dao = new UserDao(connectionMaker());
-        UserDao dao = new UserDao();
+    public UserDaoJdbc userDao() {
+        //UserDaoJdbc dao = new UserDaoJdbc(connectionMaker());
+        UserDaoJdbc dao = new UserDaoJdbc();
         dao.setDataSource(dataSource());
         return dao;
     }

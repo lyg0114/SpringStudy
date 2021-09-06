@@ -10,15 +10,19 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 import javax.sql.DataSource;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -31,6 +35,9 @@ public class UserDaoTest {
 
     @Autowired
     private UserDao dao;
+
+    @Autowired
+    private DataSource dataSource;
 
     private User user1;
     private User user2;
@@ -121,6 +128,49 @@ public class UserDaoTest {
         assertThat(dao.getCount(), is(0));
         dao.get("unknown_id");
     }
+
+
+    @Test(expected = DataAccessException.class)
+    public void duplicateKey(){
+        dao.deleteAll();
+
+        dao.add(user1);
+        dao.add(user1);
+    }
+
+
+    @Test
+    public void sqlExceptionTranslate(){
+//        dao.deleteAll();
+//
+//        try{
+//            dao.add(user1);
+//            dao.add(user1);
+//        }catch (DuplicateKeyException ex){
+//            SQLException sqlEx = (SQLException)ex.getRootCause();
+//            SQLExceptionTranslator set =
+//                    new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+//
+//            assertThat(set.translate(null,null, sqlEx), is(DuplicateKeyException.class));
+//        }
+        dao.deleteAll();
+
+        try {
+            dao.add(user1);
+            dao.add(user1);
+        }
+        catch(DuplicateKeyException ex) {
+            SQLException sqlEx = (SQLException)ex.getCause();
+            SQLExceptionTranslator set = new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+            DataAccessException transEx = set.translate("TEST1", "TEST2", sqlEx);
+            System.out.println("############");
+            System.out.println(transEx);
+            System.out.println("############");
+            assertThat(transEx, instanceOf(DuplicateKeyException.class));
+        }
+
+    }
+
 
 
 
