@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.beans.ConstructorProperties;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,6 +16,10 @@ public class User {
     private String id;
     private String name;
     private String password;
+
+    private Level levl;
+    private int login;
+    private int recommend;
 
 
 }

@@ -1,5 +1,6 @@
 package com.spring.tobysrpingframework.user.dao;
 
+import com.spring.tobysrpingframework.user.domain.Level;
 import com.spring.tobysrpingframework.user.domain.User;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,7 +17,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
@@ -45,9 +45,9 @@ public class UserDaoTest {
 
     @Before
     public void setUp(){
-        this.user1 = new User("kyle1","이초다1","password1");
-        this.user2 = new User("kyle2","이초다2","password2");
-        this.user3 = new User("kyle3","이초다3","password3");
+        this.user1 = new User("kyle1","이초다1","password1", Level.BASIC,1,0);
+        this.user2 = new User("kyle2","이초다2","password2",Level.SILVER,55,10);
+        this.user3 = User.builder().id("kyle3").name("이초다3").password("password3").levl(Level.GOLD).login(100).recommend(40).build();
     }
 
     @Test
@@ -69,6 +69,20 @@ public class UserDaoTest {
         assertThat(userGet2.getName(), is(user2.getName()));
         assertThat(userGet2.getPassword(), is(user2.getPassword()));
 
+        User userget1 = dao.get(user1.getId());
+        checkSameUser(userget1, user1);
+        User userget2 = dao.get(user2.getId());
+        checkSameUser(userget2, user2);
+    }
+
+    private void checkSameUsr(User user1, User user2){
+
+        assertThat(user1.getId(), is(user2.getId()));
+        assertThat(user1.getName(), is(user2.getName()));
+        assertThat(user1.getPassword(), is(user2.getPassword()));
+        assertThat(user1.getLevl(), is(user2.getLevl()));
+        assertThat(user1.getLogin(), is(user2.getLogin()));
+        assertThat(user1.getRecommend(), is(user2.getRecommend()));
 
     }
 
