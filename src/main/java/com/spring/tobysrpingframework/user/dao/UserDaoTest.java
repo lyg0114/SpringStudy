@@ -47,7 +47,7 @@ public class UserDaoTest {
     public void setUp(){
         this.user1 = new User("kyle1","이초다1","password1", Level.BASIC,1,0);
         this.user2 = new User("kyle2","이초다2","password2",Level.SILVER,55,10);
-        this.user3 = User.builder().id("kyle3").name("이초다3").password("password3").levl(Level.GOLD).login(100).recommend(40).build();
+        this.user3 = User.builder().id("kyle3").name("이초다3").password("password3").level(Level.GOLD).login(100).recommend(40).build();
     }
 
     @Test
@@ -80,11 +80,35 @@ public class UserDaoTest {
         assertThat(user1.getId(), is(user2.getId()));
         assertThat(user1.getName(), is(user2.getName()));
         assertThat(user1.getPassword(), is(user2.getPassword()));
-        assertThat(user1.getLevl(), is(user2.getLevl()));
+        assertThat(user1.getLevel(), is(user2.getLevel()));
         assertThat(user1.getLogin(), is(user2.getLogin()));
         assertThat(user1.getRecommend(), is(user2.getRecommend()));
 
     }
+
+    @Test
+    public void update(){
+
+        dao.deleteAll();
+        dao.add(user1);
+        dao.add(user2);
+
+        user1.setName("홍길동");
+        user1.setPassword("gildong");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(1000);
+        user1.setRecommend(999);
+        dao.update(user1);
+
+        User user1update = dao.get(user1.getId());
+        checkSameUser(user1, user1update);
+
+        User user2same = dao.get(user2.getId());
+        checkSameUser(user2, user2same);
+
+    }
+
+
 
     @Test
     public void count() throws SQLException, ClassNotFoundException {
