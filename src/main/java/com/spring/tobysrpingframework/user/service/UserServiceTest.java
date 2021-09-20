@@ -46,5 +46,25 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void upgradeLevels() {
+        userDao.deleteAll();
+        for(User user : users) userDao.add(user);
+        userService.upgradeLevels();
+        checkLevel(users.get(0), Level.BASIC);
+        checkLevel(users.get(1), Level.SILVER);
+        checkLevel(users.get(2), Level.SILVER);
+        checkLevel(users.get(3), Level.GOLD);
+        checkLevel(users.get(4), Level.GOLD);
+    }
+
+    private void checkLevel(User user, Level expectedLevel){
+        User userUpdate = userDao.get(user.getId());
+        assertThat(userUpdate.getLevel(), is(expectedLevel));
+    }
+
+
+
+
 
 }
