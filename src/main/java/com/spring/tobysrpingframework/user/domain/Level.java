@@ -2,18 +2,25 @@ package com.spring.tobysrpingframework.user.domain;
 
 public enum Level {
 
-    BASIC(1), SILVER(2), GOLD(3);
+//    BASIC(1,SILVER), SILVER(2,GOLD), GOLD(3, null);
+
+    GOLD(3, null), SILVER(2, GOLD), BASIC(1, SILVER);
 
     private final int value;
+    private final Level next;
 
-    Level(int value) {
+    Level(int value, Level next) {
         this.value = value;
+        this.next = next;
     }
 
     public int intValue() {
         return value;
     }
 
+    public Level nextLevel(){
+        return this.next;
+    }
 
     public static Level valueOf(int value){
         switch (value){
@@ -23,6 +30,8 @@ public enum Level {
             default: throw new AssertionError("Unknow value : " + value);
         }
     }
+
+
 
 
 }
