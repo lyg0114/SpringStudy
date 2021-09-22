@@ -17,6 +17,7 @@ public class UserTest {
         user = new User();
     }
 
+    //Level Up이 정상적으로 등작하는지 테스트
     @Test()
     public void upgradeLevel() {
         Level[] levels = Level.values();
@@ -28,6 +29,7 @@ public class UserTest {
         }
     }
 
+    //마지막 레벨에 exception이 발생하는지 테스트
     @Test(expected=IllegalStateException.class)
     public void cannotUpgradeLevel() {
         Level[] levels = Level.values();
