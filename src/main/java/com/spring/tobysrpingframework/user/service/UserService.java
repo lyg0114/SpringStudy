@@ -36,7 +36,7 @@ public class UserService {
         }
     }
 
-    private void upgradeLevel(User user) {
+    protected void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
     }
@@ -46,4 +46,5 @@ public class UserService {
         if(user.getLevel() == null) user.setLevel(Level.BASIC);
         userDao.add(user);
     }
+
 }
