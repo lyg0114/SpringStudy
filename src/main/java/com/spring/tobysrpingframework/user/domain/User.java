@@ -16,5 +16,7 @@ public class User {
     private String name;
     private String password;
     Level level;
+    int login;
+    int recommend;
 
 }
