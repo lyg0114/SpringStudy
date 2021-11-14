@@ -1,6 +1,7 @@
 package com.spring.tobysrpingframework.user.dao;
 
 import com.mysql.cj.result.Row;
+import com.spring.tobysrpingframework.user.domain.Level;
 import com.spring.tobysrpingframework.user.domain.User;
 import jdk.nashorn.internal.scripts.JD;
 import org.springframework.dao.DataAccessException;
@@ -25,6 +26,9 @@ public class UserDaoJdbc implements UserDao{
                     user.setId(rs.getString("id"));
                     user.setName(rs.getString("name"));
                     user.setPassword(rs.getString("password"));
+                    user.setLevel(Level.valueOf(rs.getInt("level")));
+                    user.setLogin(rs.getInt("login"));
+                    user.setRecommend(rs.getInt("recommend"));
                     return user;
                 }
             };
@@ -38,8 +42,9 @@ public class UserDaoJdbc implements UserDao{
 
 
     public void add(User user)  {
-        this.jdbcTemplate.update("insert into users(id, name, password) values(?,?,?)",
-                                        user.getId(),user.getName(),user.getPassword());
+        this.jdbcTemplate.update("insert into users(id, name, password, level , login, recommend) values(?,?,?,?,?,?)",
+                                        user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(),
+                                        user.getLogin(), user.getRecommend());
     }
 
 
@@ -83,6 +88,14 @@ public class UserDaoJdbc implements UserDao{
         );
     }
 
+    @Override
+    public void update(User user) {
+       this.jdbcTemplate.update(
+               "update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ? ",
+                     user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(),user.getId()
+       );
+
+    }
 
 
 }
