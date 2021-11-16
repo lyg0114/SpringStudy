@@ -61,6 +61,24 @@ public class UserServiceTest {
         checkLevelUpgraded(users.get(4), false);
     }
 
+    @Test
+    public void upgradeAllOrNothing() throws Exception{
+        UserService testUserService = new TestUserService(users.get(3).getId());
+        testUserService.setUserDao(this.userDao);
+        testUserService.setDataSource(this.dataSource);
+        userDao.deleteAll();
+        for(User user : users) userDao.add(user);
+
+        try{
+            testUserService.upgradeLevels();
+            fail("TestUserServiceException e");
+        }
+        catch (TestUserServiceException e){
+        }
+
+        checkLevelUpgraded(users.get(1), false);
+    }
+
     private void checkLevelUpgraded(User user, boolean upgraded){
 
         User userUpdate = userDao.get(user.getId());
@@ -71,6 +89,7 @@ public class UserServiceTest {
             assertThat(userUpdate.getLevel(), is(user.getLevel()));
         }
     }
+
     @Test
     public void add(){
         userDao.deleteAll();
@@ -89,31 +108,4 @@ public class UserServiceTest {
         assertThat(userWithoutLevelRead.getLevel(), is(Level.BASIC));
 
     }
-
-    @Test
-    public void upgradeAllOrNothing() throws Exception{
-
-        UserService testUserService = new TestUserService(users.get(3).getId());
-        testUserService.setUserDao(this.userDao);
-        testUserService.setDataSource(this.dataSource);
-        userDao.deleteAll();
-        for(User user : users) userDao.add(user);
-
-        try{
-            testUserService.upgradeLevels();
-            fail("TestUserServiceException e");
-        }
-        catch (TestUserServiceException e){
-        }
-
-        checkLevelUpgraded(users.get(1), false);
-
-
-    }
-
-
-
-
-
-
 }

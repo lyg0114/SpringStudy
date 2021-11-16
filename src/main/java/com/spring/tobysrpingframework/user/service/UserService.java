@@ -3,7 +3,11 @@ package com.spring.tobysrpingframework.user.service;
 import com.spring.tobysrpingframework.user.dao.UserDao;
 import com.spring.tobysrpingframework.user.domain.Level;
 import com.spring.tobysrpingframework.user.domain.User;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.sql.DataSource;
@@ -29,6 +33,25 @@ public class UserService {
    }
 
    public void upgradeLevels() throws Exception {
+
+      PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
+      TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+      try{
+         List<User> users = userDao.getAll();
+         for(User user : users){
+            if(canUpgradeLevel(user)){
+               upgradeLevel(user);
+            }
+         }
+         transactionManager.commit(status);
+      } catch (RuntimeException e){
+         transactionManager.rollback(status);
+         throw e;
+      }
+
+   }
+   public void upgradeLevels2() throws Exception {
 
       TransactionSynchronizationManager.initSynchronization();
       Connection c = DataSourceUtils.getConnection(dataSource);
