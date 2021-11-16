@@ -3,16 +3,10 @@ package com.spring.tobysrpingframework.user.service;
 import com.spring.tobysrpingframework.user.dao.UserDao;
 import com.spring.tobysrpingframework.user.domain.Level;
 import com.spring.tobysrpingframework.user.domain.User;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class UserService {
@@ -21,21 +15,18 @@ public class UserService {
    public static final int MIN_RECCOMEND_FOR_GOLD = 30;
 
    UserDao userDao;
-   private DataSource dataSource;
-
+   PlatformTransactionManager transactionManager;
 
    public void setUserDao(UserDao userDao) {
-       this.userDao = userDao;
+      this.userDao = userDao;
    }
-
-   public void setDataSource(DataSource dataSource){
-     this.dataSource = dataSource;
+   public void setTransactionManager(PlatformTransactionManager transactionManager) {
+      this.transactionManager = transactionManager;
    }
 
    public void upgradeLevels() throws Exception {
 
-      PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
-      TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+      TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 
       try{
          List<User> users = userDao.getAll();
@@ -44,34 +35,10 @@ public class UserService {
                upgradeLevel(user);
             }
          }
-         transactionManager.commit(status);
+         this.transactionManager.commit(status);
       } catch (RuntimeException e){
-         transactionManager.rollback(status);
+         this.transactionManager.rollback(status);
          throw e;
-      }
-
-   }
-   public void upgradeLevels2() throws Exception {
-
-      TransactionSynchronizationManager.initSynchronization();
-      Connection c = DataSourceUtils.getConnection(dataSource);
-      c.setAutoCommit(false);
-
-      try{
-         List<User> users = userDao.getAll();
-         for(User user : users){
-            if(canUpgradeLevel(user)){
-               upgradeLevel(user);
-            }
-         }
-         c.commit();
-      } catch (Exception e){
-         c.rollback();
-         throw e;
-      } finally {
-         DataSourceUtils.releaseConnection(c, dataSource);
-         TransactionSynchronizationManager.unbindResource(this.dataSource);
-         TransactionSynchronizationManager.clearSynchronization();
       }
 
    }
