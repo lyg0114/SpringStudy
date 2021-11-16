@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import static com.spring.tobysrpingframework.user.service.UserService.MIN_LOGCOU
 import static com.spring.tobysrpingframework.user.service.UserService.MIN_RECCOMEND_FOR_GOLD;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/test-applicationContext.xml")
@@ -28,6 +30,9 @@ public class UserServiceTest {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    DataSource dataSource;
 
     List<User> users;
 
@@ -43,7 +48,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void upgradeLevels(){
+    public void upgradeLevels() throws Exception{
         userDao.deleteAll();
         for(User user : users)
             userDao.add(user);
@@ -84,6 +89,31 @@ public class UserServiceTest {
         assertThat(userWithoutLevelRead.getLevel(), is(Level.BASIC));
 
     }
+
+    @Test
+    public void upgradeAllOrNothing() throws Exception{
+
+        UserService testUserService = new TestUserService(users.get(3).getId());
+        testUserService.setUserDao(this.userDao);
+        testUserService.setDataSource(this.dataSource);
+        userDao.deleteAll();
+        for(User user : users) userDao.add(user);
+
+        try{
+            testUserService.upgradeLevels();
+            fail("TestUserServiceException e");
+        }
+        catch (TestUserServiceException e){
+        }
+
+        checkLevelUpgraded(users.get(1), false);
+
+
+    }
+
+
+
+
 
 
 }
