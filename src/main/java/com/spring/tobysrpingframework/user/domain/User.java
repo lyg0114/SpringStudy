@@ -18,6 +18,7 @@ public class User {
     Level level;
     int login;
     int recommend;
+    private String email;
 
 
     public void upgradeLevel(){

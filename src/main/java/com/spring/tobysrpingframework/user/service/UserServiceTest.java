@@ -38,11 +38,11 @@ public class UserServiceTest {
     @Before
     public void setUp(){
         users = Arrays.asList(
-            new User("kyle1","이초다1","password1", Level.BASIC, MIN_LOGCOUNT_FOR_SLIVER-1, 0),
-            new User("kyle2","이초다2","password2", Level.BASIC, MIN_LOGCOUNT_FOR_SLIVER, 10),
-            new User("kyle3","이초다3","password3", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD-1),
-            new User("kyle4","이초다4","password4", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD),
-            new User("kyle5","이초다5","password5", Level.GOLD, 100, Integer.MAX_VALUE)
+            new User("kyle1","이초다1","password1", Level.BASIC, MIN_LOGCOUNT_FOR_SLIVER-1, 0, "email1@test.com"),
+            new User("kyle2","이초다2","password2", Level.BASIC, MIN_LOGCOUNT_FOR_SLIVER, 10, "email2@test.com"),
+            new User("kyle3","이초다3","password3", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD-1, "email3@test.com"),
+            new User("kyle4","이초다4","password4", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD, "email4@test.com"),
+            new User("kyle5","이초다5","password5", Level.GOLD, 100, Integer.MAX_VALUE, "email5@test.com")
         );
     }
 
