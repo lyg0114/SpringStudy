@@ -46,9 +46,9 @@ public class UserDaoTest {
 
     @Before
     public void setUp(){
-        this.user1 = new User("kyle1","이초다1","password1", Level.BASIC, 1, 0);
-        this.user2 = new User("kyle2","이초다2","password2", Level.SILVER, 55, 10);
-        this.user3 = new User("kyle3","이초다3","password3", Level.GOLD, 100, 40);
+        this.user1 = new User("kyle1","이초다1","password1", Level.BASIC, 1, 0, "test@email.com");
+        this.user2 = new User("kyle2","이초다2","password2", Level.SILVER, 55, 10, "test@email.com");
+        this.user3 = new User("kyle3","이초다3","password3", Level.GOLD, 100, 40, "test@email.com");
     }
 
    @Test
