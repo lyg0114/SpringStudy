@@ -16,8 +16,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.spring.tobysrpingframework.user.service.UserService.MIN_LOGCOUNT_FOR_SLIVER;
-import static com.spring.tobysrpingframework.user.service.UserService.MIN_RECCOMEND_FOR_GOLD;
+import static com.spring.tobysrpingframework.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SLIVER;
+import static com.spring.tobysrpingframework.user.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
+import static com.spring.tobysrpingframework.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SLIVER;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -28,6 +29,9 @@ public class UserServiceTest {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserServiceImpl userServiceImpl;
 
     @Autowired
     UserDao userDao;
@@ -59,7 +63,7 @@ public class UserServiceTest {
         for(User user : users) userDao.add(user);
         
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
+        userServiceImpl.setMailSender(mockMailSender);
         
         userService.upgradeLevels();
 
@@ -79,17 +83,20 @@ public class UserServiceTest {
     @Test
     public void upgradeAllOrNothing() throws Exception{
 
-        UserService testUserService = new TestUserService(users.get(3).getId());
+        TestUserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
         testUserService.setMailSender(mailSender);
-        testUserService.setTransactionManager(this.transactionManager);
-        testUserService.setMailSender(mailSender);
+
+
+        UserServiceTx txUserService = new UserServiceTx();
+        txUserService.setTransactionManager(transactionManager);
+        txUserService.setUserService(testUserService);
 
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
 
         try{
-            testUserService.upgradeLevels();
+            txUserService.upgradeLevels();
             fail("TestUserServiceException e");
         }
         catch (TestUserServiceException e){

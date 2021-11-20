@@ -11,9 +11,18 @@
         <property name="password" value="kylelovelizzy" />
     </bean>
 
-   <bean id="userService" class="com.spring.tobysrpingframework.user.service.UserService">
+<!--   <bean id="userService" class="com.spring.tobysrpingframework.user.service.UserService">-->
+<!--      <property name="userDao" ref="userDao"/>-->
+<!--      <property name="transactionManager" ref="transactionManager" />-->
+<!--      <property name="mailSender" ref="mailSender" />-->
+<!--   </bean>-->
+
+    <bean id="userService" class="com.spring.tobysrpingframework.user.service.UserServiceTx">
+        <property name="transactionManager" ref="transactionManager"/> <property name="userService" ref="userServiceImpl"/>
+    </bean>
+
+   <bean id="userServiceImpl" class="com.spring.tobysrpingframework.user.service.UserServiceImpl">
       <property name="userDao" ref="userDao"/>
-      <property name="transactionManager" ref="transactionManager" />
       <property name="mailSender" ref="mailSender" />
    </bean>
 
