@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,7 +59,8 @@ public class UserServiceTest {
 
     @Test
     @DirtiesContext
-    public void upgradeLevels() throws Exception{
+    public void upgradeLevels_before() throws Exception{
+
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
         
@@ -79,6 +81,81 @@ public class UserServiceTest {
         assertThat(requests.get(1), is(users.get(3).getEmail()));
         
     }
+
+    @Test
+    public void upgradeLevels() throws Exception{
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+
+        MockUserDao mockUserDao = new MockUserDao(this.users);
+        userServiceImpl.setUserDao(mockUserDao); // userServiceImpl에 mockUserDao를 Dependency Injection
+
+        MockMailSender mockMailSender = new MockMailSender();
+        userServiceImpl.setMailSender(mockMailSender);
+
+        userServiceImpl.upgradeLevels();
+
+        List<User> updated = mockUserDao.getUpdated();
+        assertThat(updated.size(), is(2));
+        checkUserAndLevel(updated.get(0), "kyle2", Level.SILVER);
+        checkUserAndLevel(updated.get(1), "kyle4", Level.GOLD);
+
+        List<String> requests = mockMailSender.getRequests();
+        assertThat(requests.size(), is(2));
+        assertThat(requests.get(0), is(users.get(1).getEmail()));
+        assertThat(requests.get(1), is(users.get(3).getEmail()));
+
+    }
+
+    private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel){
+        assertThat(updated.getId(), is(expectedId));
+        assertThat(updated.getLevel(), is(expectedLevel));
+    }
+
+    static class MockUserDao implements UserDao{
+
+        private List<User> users;
+        private List<User> updated = new ArrayList<>();
+
+        private MockUserDao(List<User> users){
+            this.users = users;
+        }
+
+        public List<User> getUpdated(){
+            return this.updated;
+        }
+
+        @Override
+        public List<User> getAll() {
+            return this.users;
+        }
+
+        @Override
+        public void update(User user) {
+            updated.add(user);
+        }
+
+        @Override
+        public void add(User user) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public User get(String id) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void deleteAll() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getCount() {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
 
     @Test
     public void upgradeAllOrNothing() throws Exception{
@@ -134,4 +211,5 @@ public class UserServiceTest {
         assertThat(userWithoutLevelRead.getLevel(), is(Level.BASIC));
 
     }
+
 }
