@@ -18,7 +18,8 @@
 <!--   </bean>-->
 
     <bean id="userService" class="com.spring.tobysrpingframework.user.service.UserServiceTx">
-        <property name="transactionManager" ref="transactionManager"/> <property name="userService" ref="userServiceImpl"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="userService" ref="userServiceImpl"/>
     </bean>
 
    <bean id="userServiceImpl" class="com.spring.tobysrpingframework.user.service.UserServiceImpl">
